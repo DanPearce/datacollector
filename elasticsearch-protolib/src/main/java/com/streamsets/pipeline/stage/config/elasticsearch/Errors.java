@@ -46,7 +46,7 @@ public enum Errors implements ErrorCode {
   ELASTICSEARCH_22("Failed to fetch batch: '{}'"),
   ELASTICSEARCH_23("Cursor expired, please Reset Origin and restart the pipeline."),
   ELASTICSEARCH_24("Offset field '{}' not found in parsed record."),
-  ELASTICSEARCH_25("Incremental mode requires the query to contain ${OFFSET} in at least one field"),
+  ELASTICSEARCH_25("Incremental securityMode requires the query to contain ${OFFSET} in at least one field"),
   ELASTICSEARCH_26("Changing the parallelism from '{}' to '{}' slices requires resetting the origin as it recomputes shards."),
   ELASTICSEARCH_27("Could not parse the parent ID template expression: {}"),
   ELASTICSEARCH_28("Could not evaluate the parent ID template expression: {}"),

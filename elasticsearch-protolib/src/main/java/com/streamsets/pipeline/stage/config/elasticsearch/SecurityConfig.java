@@ -16,11 +16,73 @@
 package com.streamsets.pipeline.stage.config.elasticsearch;
 
 import com.streamsets.pipeline.api.ConfigDef;
+import com.streamsets.pipeline.api.Dependency;
+import com.streamsets.pipeline.api.ValueChooserModel;
 import com.streamsets.pipeline.api.credential.CredentialValue;
+import com.streamsets.pipeline.lib.elasticsearch.AWSRegionChooserValues;
+import com.streamsets.pipeline.lib.elasticsearch.AWSRegions;
 
 public class SecurityConfig {
 
   public static final String CONF_PREFIX = "conf.securityConfig.";
+
+  @ConfigDef(
+      required = true,
+      type = ConfigDef.Type.MODEL,
+      label = "Mode",
+      description = "Select whether to encrypt or decrypt fields",
+      dependsOn = "useSecurity^",
+      triggeredByValue = "true",
+      defaultValue = "BASIC",
+      displayPosition = 37,
+      group = "SECURITY"
+  )
+  @ValueChooserModel(SecurityModeChooserValues.class)
+  public SecurityMode securityMode;
+
+  @ConfigDef(
+      required = false,
+      type = ConfigDef.Type.MODEL,
+      defaultValue = "",
+      label = "AWS Region",
+      dependencies = {
+          @Dependency(configName = "useSecurity^", triggeredByValues = "true"),
+          @Dependency(configName = "securityMode", triggeredByValues = "AWSSIGV4")
+      },
+      displayPosition = 38,
+      group = "SECURITY"
+  )
+  @ValueChooserModel(AWSRegionChooserValues.class)
+  public AWSRegions awsRegion;
+
+  @ConfigDef(
+      required = false,
+      type = ConfigDef.Type.CREDENTIAL,
+      defaultValue = "",
+      label = "AWS Access Key",
+      dependencies = {
+          @Dependency(configName = "useSecurity^", triggeredByValues = "true"),
+          @Dependency(configName = "securityMode", triggeredByValues = "AWSSIGV4")
+      },
+      displayPosition = 39,
+      group = "SECURITY"
+  )
+  public CredentialValue awsAccessKeyId = () -> "";
+
+  @ConfigDef(
+      required = false,
+      type = ConfigDef.Type.CREDENTIAL,
+      defaultValue = "",
+      label = "AWS Secret Access Key",
+      dependencies = {
+          @Dependency(configName = "useSecurity^", triggeredByValues = "true"),
+          @Dependency(configName = "securityMode", triggeredByValues = "AWSSIGV4")
+      },
+      displayPosition = 40,
+      group = "SECURITY"
+  )
+  public CredentialValue awsSecretAccessKey = () -> "";
+
 
   // Display positition here starts where ElasticsearchConfig stops. This is because this config is also available
   // on error stage where there is only one tab an hence all configs are sequential.
@@ -29,8 +91,10 @@ public class SecurityConfig {
       type = ConfigDef.Type.CREDENTIAL,
       defaultValue = "username:password",
       label = "Security Username/Password",
-      dependsOn = "useSecurity^",
-      triggeredByValue = "true",
+      dependencies = {
+          @Dependency(configName = "useSecurity^", triggeredByValues = "true"),
+          @Dependency(configName = "securityMode", triggeredByValues = "BASIC")
+      },
       displayPosition = 41,
       group = "SECURITY"
   )

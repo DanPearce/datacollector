@@ -136,7 +136,7 @@ public class ElasticsearchSource extends BasePushSource {
         lastOffset = new ElasticsearchSourceOffset();
       }
 
-      // Pipeline in incremental mode and started for the first time.
+      // Pipeline in incremental securityMode and started for the first time.
       if (conf.isIncrementalMode && lastOffset.getTimeOffset() == null) {
         lastOffset.setTimeOffset(conf.initialOffset);
       }
@@ -243,7 +243,7 @@ public class ElasticsearchSource extends BasePushSource {
           return true;
         }
 
-        // Wait for next incremental mode interval
+        // Wait for next incremental securityMode interval
         while (System.currentTimeMillis() < nextIncrementalExecution) {
           if (!ThreadUtil.sleep(100)) {
             break;
